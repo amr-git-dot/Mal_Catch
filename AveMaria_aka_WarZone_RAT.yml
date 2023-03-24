@@ -1,0 +1,27 @@
+rule AveMaria : RAT
+{
+  meta:
+    description = "Detection Rule for AveMaria(warzone) RAT"
+    email = "amr.ashraf.re@outlook.com"
+    author = "Amr Ashraf"
+
+  strings:
+    $mz = {4D 5A}     // MZ header
+
+    $string1 = "cmd.exe /C ping 1.2.3.4 -n 4 -w 1000 > Nul & cmd.exe /C"
+    $string2 = "cmd.exe /C ping 1.2.3.4 -n 2 -w 1000 > Nul & Del /f /q"
+    $string3 = "powershell Add-MpPreference -ExclusionPath"
+    
+
+    $K_1 = {35 AE B2 C2}
+    $K_2 = {6B CA EB 85}   
+    
+    $rcrs_seq = {45 45 45 C6 A9 55 CE 05 49 16 13 12 CE 0D 49 AC CC 45 45 45 CE 04 75 76 B3 CE 1C 69 CE 4C CC 00}
+
+  condition:
+    $mz at 0 and
+    2 of ($string*) or
+    $rcrs_seq and
+    $K_1 and $K_2 and
+    filesize < 300KB
+}
