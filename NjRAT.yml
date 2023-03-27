@@ -1,0 +1,31 @@
+rule NjRAT : RAT
+{
+  meta:
+    description = "Detection Rule for NjRAT"
+    email = "amr.ashraf.re@outlook.com"
+    author = "Amr Ashraf"
+
+  strings:
+    $mz = {4D 5A}     // MZ header
+
+    $string1 = "SEE_MASK_NOZONECHECKS" wide
+    $string2 = "netsh firewall add allowedprogram" wide
+    $string3 = "cmd.exe /c ping 0 -n 2 & del" wide
+    
+    $typical1 = "|'|'|" wide
+    $typical2 = "rn" wide
+    $typical3 = "kl" wide
+    $typical4 = "prof" wide
+    $typical5 = "inv" wide
+    $typical6 = "CAP" wide
+
+  condition:
+    ($mz at 0) and filesize < 100KB and
+    (
+    (2 of ($string*)
+    and
+    3 of ($typical*) )
+    or
+    (all of ($typical*))
+    )
+}
