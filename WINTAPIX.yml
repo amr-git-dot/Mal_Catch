@@ -1,0 +1,25 @@
+rule WINTAPIX : rootkit
+{
+  meta:
+    description = "Detection Rule for WINTAPIX Rootkit"
+    email = "amr.ashraf.re@outlook.com"
+    author = "Amr Ashraf"
+
+  strings:
+    $mz = {4D 5A}     // MZ header
+
+    $string1 = "\\SystemRoot\\System32\\drivers\\WinTapix.sys" wide
+    $string2 = "S-1-5-18" wide
+    $string3 = "wininit.exe" wide
+    $string4 = "csrss.exe" wide
+    $string5 = "smss.exe" wide
+    $string6 = "services.exe" wide
+    $string7 = "winlogon.exe" wide
+    $string8 = "lsass.exe" wide
+
+    $shellcode = {E8 80 4F 01 00 80 4F 01  00 80 2B F1 BC 9A 16 19 33 71 FA A5 5B 8E B3 FB  77 F4 88 A3 03 35 38 56 D5 59 34 1C 1A C0 CF 52  B6 00 00 00 00 30 9E 89}
+  condition:
+    ($mz at 0) and 
+    (all of ($string*) or $shellcode)
+    
+}
