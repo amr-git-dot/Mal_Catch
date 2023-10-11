@@ -1,0 +1,19 @@
+rule RedLine : Stealer
+{
+  meta:
+    description = "Detection Rule for RedLine Stealer"
+    email = "amr.ashraf.re@outlook.com"
+    author = "Amr Ashraf"
+
+  strings:
+    $mz = {4D 5A}     // MZ header
+
+    $string1 = "Yandex\\YaAddon" wide
+    $string2 = "BlockedCountry" ascii
+    $string3 = "https://api.ip.sb/geoip" wide
+    $string4 = "ScanningArgs" ascii
+
+    
+  condition:
+    ($mz at 0) and (3 of ($string*))
+}
