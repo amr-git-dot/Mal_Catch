@@ -1,0 +1,22 @@
+rule BlackCat : Ransomware
+{
+  meta:
+    description = "Detection Rule for BlackCat Ransomware"
+    email = "amr.ashraf.re@outlook.com"
+    author = "Amr Ashraf"
+
+  strings:
+    $mz = {4D 5A}     // MZ header
+
+    $string1 = "enable_self_propagation" ascii
+    $string2 = "enable_esxi_vm_snapshot_kill" ascii
+    $string3 = "RECOVER-${EXTENSION}-FILES.txt" ascii
+    $string4 = "win7_plus=true" ascii
+    $string5 = "\\.\\pipe\\__rust_anonymous_pipe1__." ascii
+    $string6 = "MaxMpxCt /d 65535" ascii
+    $string7 = "Speed:  Mb/s, Data: Mb/Mb, Files processed: /, Files scanned:" ascii
+    
+
+  condition:
+    ($mz at 0) and (4 of ($string*))
+}
